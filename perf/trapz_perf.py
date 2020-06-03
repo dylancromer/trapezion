@@ -16,10 +16,10 @@ def describe_trapz():
 
     @pytest.fixture
     def func():
-        return lambda x: np.array([x**2])
+        return lambda x: np.array([x, x**2])[:, None, None] * np.array([1, 2, 3,])[None, :, None] * np.array([1, 1.01, 1.02, 1.03])[None, None, :]
 
     def its_fast(benchmark, func, xs, dxs):
-        benchmark(trapezion.trapz, func, xs, dxs, (1,))
+        benchmark(trapezion.trapz, lambda x: func(x).flatten(), xs, dxs, (2, 3, 4,))
 
 
 def describe_baseline():
@@ -47,7 +47,7 @@ def describe_baseline():
 
     @pytest.fixture
     def func():
-        return lambda x: np.array([x**2])
+        return lambda x: np.array([x, x**2])[:, None, None] * np.array([1, 2, 3,])[None, :, None] * np.array([1, 1.01, 1.02, 1.03])[None, None, :]
 
     def it_should_be_slower(benchmark, trapz_ref, func, xs, dxs):
-        benchmark(trapz_ref, func, xs, dxs)
+        benchmark(trapz_ref, lambda x: func(x).flatten(), xs, dxs)
